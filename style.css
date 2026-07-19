@@ -21,7 +21,7 @@
     content: "";
     position: absolute;
     top: -20px; left: -20px; right: -20px; bottom: -20px; 
-    background: url('background.mp4') no-repeat center center / cover;
+    background: url('background.gif') no-repeat center center / cover;
     filter: blur(8px);
 }
 
