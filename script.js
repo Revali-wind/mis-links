@@ -56,3 +56,83 @@ secretIcon.addEventListener('click', () => {
         }, 4000);
     }
 });
+
+// ==========================================
+// MINI REPRODUCTOR DE MÚSICA
+// ==========================================
+// REPRODUCTOR ALEATORIO
+const playlist = [
+    { name: "Zelda: BOTW - Life in the Ruins", src: "./musica 1.mp3" },
+    { name: "Deltarune - Dark Sanctuary", src: "./musica 2.mp3" },
+    { name: "Zelda: The Wind Waker - Fairy Spring", src: "./musica 3.mp3" },
+    { name: "Zelda: TOTK - Sidon Theme", src: "./musica 4.mp3" }
+];
+
+// VARIABLES
+const audio = document.getElementById('bg-audio');
+const playPauseBtn = document.getElementById('play-pause-btn');
+const playIcon = document.getElementById('play-icon');
+const trackStatus = document.querySelector('.track-status');
+const trackName = document.getElementById('track-name');
+
+// FUNCIÓN PARA CARGAR CANCIÓN
+function cargarNuevaCancion() {
+    const cancionAleatoria = playlist[Math.floor(Math.random() * playlist.length)];
+    audio.src = cancionAleatoria.src;
+    trackName.textContent = cancionAleatoria.name;
+
+    // Reiniciar animación por si la canción anterior era larga
+    trackName.classList.remove('scrolling-text');
+
+    // Revisar tamaño con un pequeño retraso para que mida bien el nuevo texto
+    setTimeout(() => {
+        const contenedorTexto = document.querySelector('.marquee-container');
+        if (trackName.scrollWidth > contenedorTexto.clientWidth) {
+            trackName.classList.add('scrolling-text');
+        }
+    }, 50);
+}
+
+// CARGA INICIAL
+cargarNuevaCancion();
+
+// AUTO-PLAY AL HACER CLIC
+let isPlaying = false;
+let primerClic = false;
+
+document.addEventListener('click', () => {
+    if (!primerClic) {
+        audio.play();
+        playIcon.classList.remove('fa-play');
+        playIcon.classList.add('fa-pause');
+        trackStatus.textContent = 'Reproduciendo...';
+        isPlaying = true;
+        primerClic = true;
+    }
+});
+
+// BOTÓN ESPECÍFICO PLAY/PAUSE
+playPauseBtn.addEventListener('click', (evento) => {
+    evento.stopPropagation(); 
+    
+    if (isPlaying) {
+        audio.pause();
+        playIcon.classList.remove('fa-pause');
+        playIcon.classList.add('fa-play');
+        trackStatus.textContent = 'Pausado';
+    } else {
+        audio.play();
+        playIcon.classList.remove('fa-play');
+        playIcon.classList.add('fa-pause');
+        trackStatus.textContent = 'Reproduciendo...';
+    }
+    
+    isPlaying = !isPlaying;
+    primerClic = true; 
+});
+
+// PASAR A LA SIGUIENTE AL TERMINAR LA CANCIÓN
+audio.addEventListener('ended', () => {
+    cargarNuevaCancion();
+    audio.play(); // Como ya hubo interacción, el navegador permite reproducir solita
+});
